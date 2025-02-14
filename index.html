@@ -3,70 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI World Simulator</title>
+    <title>AI Civilization Simulator</title>
     <style>
-        canvas {
-            border: 1px solid black;
-            background-color: lightgreen;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+        #world {
+            width: 600px;
+            height: 300px;
+            border: 2px solid white;
+            margin: 20px auto;
+            position: relative;
+            background: linear-gradient(to bottom, #6b8e23, #008080);
+        }
+        .ai {
+            width: 20px;
+            height: 20px;
+            background-color: yellow;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            border-radius: 50%;
+        }
+        #log {
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid white;
+            padding: 10px;
+            background-color: #333;
         }
     </style>
 </head>
 <body>
-    <canvas id="worldCanvas" width="800" height="500"></canvas>
+    <h1>AI Civilization Simulator</h1>
+    <div id="world">
+        <div class="ai" id="ai"></div>
+    </div>
+    <h2>Event Log</h2>
+    <div id="log"></div>
+    
     <script>
-        const canvas = document.getElementById("worldCanvas");
-        const ctx = canvas.getContext("2d");
+        let ai = document.getElementById("ai");
+        let log = document.getElementById("log");
+        let age = "Prehistoric";
+        let progress = 0;
         
-        class AIEntity {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.age = "Prehistoric";
-                this.color = "brown";
-                this.evolutionProgress = 0;
-                this.speed = Math.random() * 2 + 1;
-            }
+        function logEvent(event) {
+            let entry = document.createElement("p");
+            entry.textContent = event;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function updateAI() {
+            progress++;
+            ai.style.left = `${progress * 5}px`;
             
-            evolve() {
-                this.evolutionProgress++;
-                if (this.evolutionProgress > 100) this.age = "Ancient";
-                if (this.evolutionProgress > 200) this.age = "Medieval";
-                if (this.evolutionProgress > 300) this.age = "Industrial";
-                if (this.evolutionProgress > 400) this.age = "Modern";
-                if (this.evolutionProgress > 500) this.age = "Futuristic";
+            if (progress === 5) {
+                age = "Ancient Age";
+                logEvent("The AI discovered fire! Entering the Ancient Age.");
             }
-            
-            move() {
-                this.x += (Math.random() - 0.5) * this.speed;
-                this.y += (Math.random() - 0.5) * this.speed;
-                this.x = Math.max(0, Math.min(canvas.width, this.x));
-                this.y = Math.max(0, Math.min(canvas.height, this.y));
+            if (progress === 10) {
+                age = "Medieval Age";
+                logEvent("The AI learned to farm! Entering the Medieval Age.");
             }
-            
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
-                ctx.fill();
+            if (progress === 15) {
+                age = "Industrial Age";
+                logEvent("The AI built factories! Entering the Industrial Age.");
+            }
+            if (progress === 20) {
+                age = "Modern Age";
+                logEvent("The AI developed computers! Entering the Modern Age.");
+            }
+            if (progress === 25) {
+                age = "Futuristic Age";
+                logEvent("The AI reached space! Entering the Futuristic Age.");
             }
         }
         
-        let entities = [];
-        for (let i = 0; i < 50; i++) {
-            entities.push(new AIEntity(Math.random() * canvas.width, Math.random() * canvas.height));
-        }
-        
-        function update() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            entities.forEach(entity => {
-                entity.evolve();
-                entity.move();
-                entity.draw();
-            });
-            requestAnimationFrame(update);
-        }
-        
-        update();
+        setInterval(updateAI, 2000);
     </script>
 </body>
 </html>
